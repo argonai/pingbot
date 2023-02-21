@@ -19,6 +19,7 @@ impl EventHandler for Handler {
 
             let content = match command.data.name.as_str() {
                 "ping" => commands::ping::run(&command.data.options),
+                "profile" => commands::profile::run(&command.data.options),
                 _ => "not implemented".to_string(),
             };
 
@@ -42,6 +43,7 @@ impl EventHandler for Handler {
         let commands = GuildId::set_application_commands(&guild_id, &ctx.http, |commands|{
             commands
                 .create_application_command(|command| commands::ping::register(command))
+                .create_application_command(|command| commands::profile::register(command))
         }).await;
 
         println!("Added commands: {:#?}", commands);
@@ -60,7 +62,7 @@ async fn main() {
     // Login with a bot token from the environment
     let token = env::var("DISCORD_TOKEN").unwrap();
     println!("{}", token);
-    let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
+    let _intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
     let mut client = Client::builder(token, GatewayIntents::empty())
     .event_handler(Handler)
     .await
